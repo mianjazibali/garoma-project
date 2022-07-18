@@ -7,8 +7,8 @@ const modelName = 'Meeting';
 module.exports = (sequelize, DataTypes) => {
 	class Meeting extends Model {
 		static associate(models) {
-			Meeting.belongsTo(models.User, { foreignKey: 'attendee' });
-			Meeting.belongsTo(models.User, { foreignKey: 'createdBy' });
+			Meeting.belongsTo(models.User, { foreignKey: 'attendeeUserId', as: 'attendee' });
+			Meeting.belongsTo(models.User, { foreignKey: 'createdByUserId', as: 'creator' });
 		}
 	}
 	
@@ -31,11 +31,11 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.INTEGER,
 			allowNull: false,
 		},
-		attendee: {
+		attendeeUserId: {
 			type: DataTypes.INTEGER,
 			allowNull: false
 		},
-		createdBy: {
+		createdByUserId: {
 			type: DataTypes.INTEGER,
 			allowNull: false
 		},
@@ -49,8 +49,6 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	};
 	
-	// (a >= A && a <= B) || (b >= A && b <= B) || (a < A && b > B)
-	
 	const validate = {
 		dateTime: function () {
 			return (async function (meeting) {
@@ -58,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
 					where: {
 						[Op.or]: [
 							{
-								createdBy: meeting.createdBy,
+								createdByUserId: meeting.createdByUserId,
 								[Op.or]: [
 									{
 										// Scenario 1: New Meeting Start Date Is Between The Scheduled Meeting
@@ -108,7 +106,7 @@ module.exports = (sequelize, DataTypes) => {
 								]
 							},
 							{
-								attendee: meeting.attendee,
+								attendeeUserId: meeting.attendeeUserId,
 								[Op.or]: [
 									{
 										[Op.and]: [

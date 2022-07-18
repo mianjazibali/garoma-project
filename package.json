@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "mocha": "cross-env NODE_ENV=test npx mocha tests/**/*.js --reporter spec --exit",
+    "test": "cross-env NODE_ENV=test npm run db:migrate && npm run mocha",
+    "test:clean": "cross-env NODE_ENV=test npm run db:clear && npm run mocha",
     "db:migrate": "npx sequelize-cli db:migrate",
     "db:migrate:undo": "npx sequelize-cli db:migrate:undo",
     "db:seed:all": "npx sequelize-cli db:seed:all",
@@ -21,11 +23,14 @@
   "dependencies": {
     "@faker-js/faker": "^7.3.0",
     "body-parser": "^1.20.0",
+    "chai": "^4.3.6",
     "express": "^4.18.1",
     "lodash": "^4.17.21",
+    "mocha": "^10.0.0",
     "moment": "^2.29.4",
     "mysql2": "^2.3.3",
     "require-directory": "^2.1.1",
-    "sequelize": "^6.21.3"
+    "sequelize": "^6.21.3",
+    "supertest": "^6.2.4"
   }
 }

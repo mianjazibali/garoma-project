@@ -20,12 +20,12 @@ module.exports = {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 			},
-			attendee: {
+			attendeeUserId: {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 				references: { model: 'Users', key: 'id' },
 			},
-			createdBy: {
+			createdByUserId: {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 				references: { model: 'Users', key: 'id' },

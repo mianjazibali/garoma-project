@@ -3,10 +3,10 @@ const responseModule = require('./../modules/response');
 
 const createMeeting = async (request, response) => {
 	try {
-		const { userId: attendee } = req.params;
+		const { params: { userId }, body: data } = request;
 		
-		// Using Created By Received In API Body For Now, But We Need To Use Id Of A LoggedIn User
-		const meeting = await meetingModule.createMeeting({ ...request.body, attendee });
+		// Using Created By Received In API Body For Now, But Need To Use Id Of A LoggedIn User
+		const meeting = await meetingModule.createMeeting({ ...data, attendeeUserId: parseInt(userId, 10) });
 		
 		return responseModule.sendSuccess({response, data: { meeting }});
 	} catch (error) {

@@ -1,7 +1,7 @@
 const moment = require('moment');
 const { Op } = require('sequelize');
 
-const createMeeting = ({ title, start, end, attendee, createdBy }) => {
+const createMeeting = ({ title, start, end, attendeeUserId, createdByUserId }) => {
 	const { Meeting } = global.db;
 	const currentTimeStamp = moment().unix();
 
@@ -9,8 +9,8 @@ const createMeeting = ({ title, start, end, attendee, createdBy }) => {
 		title,
 		start,
 		end,
-		attendee,
-		createdBy,
+		attendeeUserId,
+		createdByUserId,
 		createdAt: currentTimeStamp,
 		updatedAt: currentTimeStamp,
 	});
@@ -23,10 +23,10 @@ const fetchUserMeetings = ({ userId } = {}) => {
 		where: {
 			[Op.or]: [
 				{
-					createdBy: userId
+					createdByUserId: userId
 				},
 				{
-					attendee: userId
+					attendeeUserId: userId
 				}
 			]
 		}
