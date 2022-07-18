@@ -17,7 +17,7 @@ const createMeeting = ({ title, start, end, attendeeUserId, createdByUserId }) =
 };
 
 const fetchUserMeetings = ({ userId } = {}) => {
-	const { Meeting } = global.db;
+	const { Meeting, User } = global.db;
 
 	return Meeting.findAll({
 		where: {
@@ -29,7 +29,19 @@ const fetchUserMeetings = ({ userId } = {}) => {
 					attendeeUserId: userId
 				}
 			]
-		}
+		},
+		include: [
+			{
+				model: User,
+				as: 'creator',
+				required: true
+			},
+			{
+				model: User,
+				as: 'attendee',
+				required: true
+			}
+		]
 	});
 };
 

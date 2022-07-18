@@ -7,8 +7,8 @@ module.exports = (sequelize, DataTypes) => {
 			// define association here
 		}
 	}
-	
-	User.init({
+
+	const attributes = {
 		id: {
 			type: DataTypes.INTEGER,
 			autoIncrement: true,
@@ -39,11 +39,14 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.INTEGER,
 			allowNull: false,
 		},
-	}, {
-		sequelize,
-		modelName: 'User',
-		timestamps: false
-	});
-	
+	};
+
+	const defaultScope = {
+    attributes: {
+			exclude: [ 'password' ]
+		}
+  };
+
+	User.init(attributes, { sequelize, modelName: 'User', defaultScope, timestamps: false });
 	return User;
 };
