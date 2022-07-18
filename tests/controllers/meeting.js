@@ -34,6 +34,70 @@ describe('Meeting Controller Tests', function() {
     });
 
     // ----- A ----------- B
+    //                     a --- b
+    it('should create meeting if new meeting start from the end of the existing one', async function() {
+      await meetingModule.createMeeting(this.meetingData);
+
+      const newMeetingData = {
+        ...this.meetingData,
+        start: moment('2022-01-01 02:00:00', 'YYYY-MM-DD hh:mm:ss').unix(),
+        end: moment('2022-01-01 02:30:00', 'YYYY-MM-DD hh:mm:ss').unix(),
+      };
+
+      const { body: { meeting } } = await request(app)
+				.post(`/api/users/${this.user_1.id}/meetings/add`)
+				.set('Accept', 'application/json')
+        .send(newMeetingData)
+				.expect(STATUS_CODES.OK);
+
+      testHelpers.meeting.verifyMeeting({ actual: meeting, expected: newMeetingData});
+    });
+
+    // ----- A ----------- B
+    // a --- b
+    it('should create meeting if new meeting end at the start of the existing one', async function() {
+      await meetingModule.createMeeting(this.meetingData);
+
+      const newMeetingData = {
+        ...this.meetingData,
+        start: moment('2022-01-01 00:30:00', 'YYYY-MM-DD hh:mm:ss').unix(),
+        end: moment('2022-01-01 01:00:00', 'YYYY-MM-DD hh:mm:ss').unix(),
+      };
+
+      const { body: { meeting } } = await request(app)
+				.post(`/api/users/${this.user_1.id}/meetings/add`)
+				.set('Accept', 'application/json')
+        .send(newMeetingData)
+				.expect(STATUS_CODES.OK);
+
+      testHelpers.meeting.verifyMeeting({ actual: meeting, expected: newMeetingData});
+    });
+
+    // ----- A ----------- B
+    //       a ----------- b
+    it('should not create meeting if new meeting is same as existing one', async function() {
+      await meetingModule.createMeeting(this.meetingData);
+
+      const newMeetingData = {
+        ...this.meetingData,
+        start: moment('2022-01-01 01:00:00', 'YYYY-MM-DD hh:mm:ss').unix(),
+        end: moment('2022-01-01 02:00:00', 'YYYY-MM-DD hh:mm:ss').unix(),
+      };
+
+      const {body: response} = await request(app)
+				.post(`/api/users/${this.user_1.id}/meetings/add`)
+				.set('Accept', 'application/json')
+        .send(newMeetingData)
+				.expect(STATUS_CODES.BAD_REQUEST);
+
+      const expectedResponse = testHelpers.error.getErrorData({
+        status: STATUS_CODES.BAD_REQUEST,
+        message: ERRORS.USER_BUSY
+      });
+      testHelpers.error.verifyError({ actual: response, expected: expectedResponse });
+    });
+
+    // ----- A ----------- B
     //           a --- b
     it('should not create meeting if new meeting lies b/w existing one', async function() {
       await meetingModule.createMeeting(this.meetingData);

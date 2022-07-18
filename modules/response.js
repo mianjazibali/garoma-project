@@ -8,7 +8,7 @@ const createErrorResponse = ({ status = STATUS_CODES.INTERNAL_SERVER, data = nul
 };
 
 const sendSuccess = ({response, data}) => {
-	// Keeping It Simple For Now (KISS)
+	// Keeping It Simple For Now (KISS Principle)
 	return response.status(STATUS_CODES.OK).json(data);
 };
 

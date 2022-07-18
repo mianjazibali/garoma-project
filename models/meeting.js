@@ -87,7 +87,7 @@ module.exports = (sequelize, DataTypes) => {
 										[Op.and]: [
 											{
 												end: {
-													[Op.gte]: meeting.start
+													[Op.gt]: meeting.start
 												}
 											},
 											{
