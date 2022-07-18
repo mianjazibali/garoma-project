@@ -54,9 +54,18 @@ module.exports = (sequelize, DataTypes) => {
 			return (async function (meeting) {
 				const isAnyUserBusy = await Meeting.findOne({
 					where: {
-						[Op.or]: [
+						[Op.and]: [
 							{
-								createdByUserId: meeting.createdByUserId,
+								[Op.or]: [
+									{
+										createdByUserId: meeting.createdByUserId,
+									},
+									{
+										attendeeUserId: meeting.attendeeUserId,
+									}
+								]
+							},
+							{
 								[Op.or]: [
 									{
 										// Scenario 1: New Meeting Start Date Is Between The Scheduled Meeting
@@ -90,53 +99,6 @@ module.exports = (sequelize, DataTypes) => {
 									},
 									{
 										// Scenario 3: Scheduled Meeting Lies Between The Start and End Date Of New Meeting
-										[Op.and]: [
-											{
-												start: {
-													[Op.lt]: meeting.start
-												}
-											},
-											{
-												end: {
-													[Op.gt]: meeting.end
-												}
-											}
-										]
-									}
-								]
-							},
-							{
-								attendeeUserId: meeting.attendeeUserId,
-								[Op.or]: [
-									{
-										[Op.and]: [
-											{
-												start: {
-													[Op.gte]: meeting.start
-												}
-											},
-											{
-												start: {
-													$lte: meeting.end
-												}
-											}
-										]
-									},
-									{
-										[Op.and]: [
-											{
-												end: {
-													[Op.gte]: meeting.start
-												}
-											},
-											{
-												end: {
-													$lte: meeting.end
-												}
-											}
-										]
-									},
-									{
 										[Op.and]: [
 											{
 												start: {
