@@ -13,6 +13,8 @@ To Run, Execute The Following Commands In Order:
 
 `npm run start`
 
+`http://localhost:3000/api/users/1/meetings`
+
 To Run Tests, Use:
 
 `npm run test`
